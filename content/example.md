@@ -92,7 +92,7 @@ Update digital user data with TheKom data
 
 * **HTTP 400** Email param or request body is invalid or KNS system has a problem
 
-* Body, if any field is empty or does not exist, KNS does not update that field. (If it is possible TheKom should send only updated data)
+* Body, if any field does not exist, KNS does not update that field. (If it is possible TheKom should send only updated data)
 
 ```
 {
