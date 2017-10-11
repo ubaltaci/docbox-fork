@@ -22,7 +22,9 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X POST 
 }
 ```
 
-## Digital User (GET)
+## Digital User (GET) 
+
+<span style="color:red">V2 - 'new_card' field added to json response</span>
 
 Get digital user data from KNS
 
@@ -54,6 +56,7 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" https://
   "name": "Ugur",
   "surname": "Baltaci",
   "card": {},
+  "new_card": {},
   "birthdate": "1987-06-07",
   "gender": "M",
   "phone": "+905416258925",
@@ -83,7 +86,9 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" https://
 ```
 
 
-## Digital User (PUT)
+## Digital User (PUT) [v2 - only new_card field added]
+
+<span style="color:red">V2 - 'new_card' field added to json response</span>
 
 Update digital user data with TheKom data
 
@@ -96,6 +101,8 @@ Update digital user data with TheKom data
 * **HTTP 400** Email param or request body is invalid or KNS system has a problem
 
 * **To detach a card from a user card field should constructed as empty object ie: `card: {}`**
+
+* **To detach a new card from a user card field should constructed as empty object ie: `new_card: {}`**
 
 ```
 {
@@ -114,7 +121,14 @@ Update digital user data with TheKom data
 		"cap": "String", // validate: should contain 4 or 5 digits or empty string
 		"address_detail": "String"
 	},
-	
+	"new_card": { // optional
+		"id: "String",
+		"outletCode": "String",
+		"type": Number,
+		"insertDate": "String", // format: YYYY-MM-DD or empty string,
+		"activationDate": "String", // format: YYYY-MM-DD or empty string,
+		"expiringDate": "String", // format: YYYY-MM-DD or empty string,
+	},
 	"card": { // optional
 		"id: "String",
 		"outletCode": "String",
@@ -188,6 +202,8 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X PUT h
 
 ## Card Issued (DELETE)
 
+<span style="color:red">V2 - we can keep as it is for old card, to delete new card, make request with querystring `?v2=true`</span>
+
 Delete Card from Digital User
 
 * Email parameter should be encoded just in case.
@@ -199,7 +215,11 @@ Delete Card from Digital User
 * **HTTP 400** Email param or request body is invalid or KNS system has a problem
 
 ```endpoint
-DELETE /v1/ext/thekom/card-issued/{email} card-issued:DELETE
+DELETE /v1/ext/thekom/card-issued/{email} card-issued:DELETE // remove old card
+```
+
+```endpoint
+DELETE /v1/ext/thekom/card-issued/{email}?v2=true card-issued:DELETE // remove new card
 ```
 
 #### Example request
@@ -249,7 +269,11 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X DELET
 
 ## Card Issued (POST)
 
-New loyalty card issued or e-mail added to existing card. If existing card has already e-mail,  /card-issued [PUT] should be called.
+<span style="color:red">V2 - 'new_card' field added to request body and json response</span>
+
+<span style="color:red">V2 - at least one of the card field should be exist ('card' or 'new_card'), if both exist, both will be processed.</span>
+
+New loyalty card issued or e-mail added to existing card. If existing card has already e-mail, /card-issued [PUT] should be called.
 
 * Email parameter should be encoded just in case.
 
@@ -292,6 +316,14 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X POST 
 		"activationDate": "2017-01-01",
 		"expiringDate": "2022-01-01"
 	},
+	"new_card": {
+		"id: "11223434455",
+		"outletCode": "FRA",
+		"type": 1,
+		"insertDate": "2017-01-01", 
+		"activationDate": "2017-01-01",
+		"expiringDate": "2022-01-01"
+	},
 }
 
 ```
@@ -324,6 +356,14 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X POST 
 		"activationDate": "2017-01-01",
 		"expiringDate": "2022-01-01"
 	},
+	"new_card": {
+		"id: "11223434455",
+		"outletCode": "FRA",
+		"type": 1,
+		"insertDate": "2017-01-01", 
+		"activationDate": "2017-01-01",
+		"expiringDate": "2022-01-01"
+	},
 	"newsletterAllowed": true
 }
 
@@ -343,6 +383,10 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X POST 
 ```
 
 ## Card Issued (PUT)
+
+<span style="color:red">V2 - 'new_card' field added to request body and json response</span>
+
+<span style="color:red">V2 - at least one of the card field should be exist ('card' or 'new_card'), if both exist, both will be processed.</span>
 
 Only used when e-mail address of existing card changed.
 
@@ -390,6 +434,14 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X PUT h
 		"activationDate": "2017-01-01",
 		"expiringDate": "2022-01-01"
 	},
+	"new_card": {
+		"id: "11223434455",
+		"outletCode": "FRA",
+		"type": 1,
+		"insertDate": "2017-01-01", 
+		"activationDate": "2017-01-01",
+		"expiringDate": "2022-01-01"
+	},
 	"newsletterAllowed": false
 }
 
@@ -415,6 +467,14 @@ $ curl -H "Authentication:TOKEN_VAL" -H "Content-Type:application/json" -X PUT h
     "address_detail": "Sasasasasa"
   },
   "card": {
+		"id: "11223434455",
+		"outletCode": "FRA",
+		"type": 1,
+		"insertDate": "2017-01-01", 
+		"activationDate": "2017-01-01",
+		"expiringDate": "2022-01-01"
+  },
+  "new_card": {
 		"id: "11223434455",
 		"outletCode": "FRA",
 		"type": 1,
